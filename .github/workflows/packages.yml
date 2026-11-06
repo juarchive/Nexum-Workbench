@@ -1,0 +1,178 @@
+name: Build desktop installers
+on:
+  push:
+    branches: [main]
+    paths:
+      - "nexum/**"
+      - "packaging/**"
+      - "scripts/**"
+      - "requirements.txt"
+      - "tests/**"
+      - "LICENSE"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "docs/releases/**"
+      - ".github/workflows/packages.yml"
+  pull_request:
+    paths:
+      - "nexum/**"
+      - "packaging/**"
+      - "scripts/**"
+      - "requirements.txt"
+      - "tests/**"
+      - ".github/workflows/packages.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: desktop-packages-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  scientific:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - run: python scripts/validate.py
+      - run: python scripts/check_project.py
+      - run: python scripts/update_catalog.py --check
+  windows:
+    needs: scientific
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        id: python
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt pyinstaller==6.22.3
+      - uses: msys2/setup-msys2@v2
+        id: msys2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            mingw-w64-ucrt-x86_64-python
+            mingw-w64-ucrt-x86_64-gtk4
+            mingw-w64-ucrt-x86_64-libadwaita
+            mingw-w64-ucrt-x86_64-python-gobject
+            mingw-w64-ucrt-x86_64-python-cairo
+            mingw-w64-ucrt-x86_64-python-numpy
+            mingw-w64-ucrt-x86_64-python-scipy
+            mingw-w64-ucrt-x86_64-python-pillow
+            mingw-w64-ucrt-x86_64-python-pyopengl
+            mingw-w64-ucrt-x86_64-adwaita-icon-theme
+            mingw-w64-ucrt-x86_64-pyinstaller
+      - name: Compile bundle, verify, create installer
+        shell: powershell
+        env:
+          NEXUM_BUILD_MSYS: ${{ steps.msys2.outputs.msys2-location }}
+          NEXUM_BUILD_PYTHON: ${{ steps.python.outputs.python-path }}
+          GTK_A11Y: test
+        run: |
+          & ./packaging/windows/build.ps1 -MsysRoot $env:NEXUM_BUILD_MSYS -SciencePython $env:NEXUM_BUILD_PYTHON
+          exit $LASTEXITCODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Nexum-Windows-installer
+          path: dist/installer/*.exe
+          if-no-files-found: error
+  flatpak:
+    needs: scientific
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y flatpak flatpak-builder xvfb dbus-x11 desktop-file-utils python3-gi
+      - run: bash packaging/flatpak/build.sh
+      - name: Install and test the actual Flatpak bundle
+        run: |
+          flatpak install --user --noninteractive dist/Nexum-*-linux-x86_64.flatpak
+          export XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+          python3 packaging/flatpak/check-launcher.py
+          bash packaging/flatpak/repair-shortcut.sh
+          python3 packaging/flatpak/check-launcher.py
+          dbus-run-session -- xvfb-run -a flatpak run --command=python3 io.github.nexum.ScientificWorkbench -u -X faulthandler -c "import sys; sys.path.insert(0, '/app/share/nexum/nexum.zip'); from nexum.windows_check import main; main()"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Nexum-Linux-flatpak
+          path: |
+            dist/*.flatpak
+            dist/nexum-repair-shortcut.sh
+          if-no-files-found: error
+  macos:
+    needs: scientific
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x86_64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          environment-file: packaging/macos/environment.yml
+          activate-environment: nexum-build
+          auto-activate-base: false
+      - name: Build and verify native application
+        shell: bash -el {0}
+        run: bash packaging/macos/build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Nexum-macOS-${{ matrix.arch }}
+          path: dist/*.dmg
+          if-no-files-found: error
+  release:
+    needs: [scientific, windows, flatpak, macos]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: Nexum-*
+          path: release-assets
+          merge-multiple: true
+      - name: Assemble checksums
+        shell: bash
+        run: |
+          cd release-assets
+          sha256sum *.exe *.flatpak *.dmg *.sh > SHA256SUMS.txt
+      - name: Normalize historical preview title
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh release view v7.0.0-preview.2 >/dev/null 2>&1; then
+            gh release edit v7.0.0-preview.2 --title "Nexum 7.0.0-preview.2" --prerelease || echo "Aviso: não foi possível normalizar o título histórico."
+          fi
+      - name: Publish verified release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          version=$(python3 -m nexum.identity version)
+          tag="v$version"
+          notes="docs/releases/$version.md"
+          test -f "$notes"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag já existe; os builds foram validados, mas os binários publicados não serão substituídos."
+            exit 0
+          fi
+          flags=()
+          if [[ "$version" == *-* ]]; then
+            flags+=(--prerelease)
+          fi
+          gh release create "$tag" --target "$GITHUB_SHA" --title "Nexum $version" "${flags[@]}" --notes-file "$notes" release-assets/*

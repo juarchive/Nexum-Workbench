@@ -1,201 +1,168 @@
-                                 Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+NEXUM PROPRIETARY LICENSE
+Version 1.0 — Effective October 1, 2026
 
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+Copyright (c) 2026 Davi P Souza
+All rights reserved.
 
-   1. Definitions.
+IMPORTANT: Nexum is proprietary, source-available software. The availability of
+source code in a public repository does not make the Software open source and
+does not grant rights beyond those expressly stated in this License.
 
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
+1. DEFINITIONS
 
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
+"Software" means the Nexum Scientific Workbench software, source code, object
+code, binaries, documentation, artwork, project files, and other materials
+distributed with this License, excluding Third-Party Components.
 
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
+"Licensor" means Davi P Souza, the copyright holder of the portions of the
+Software owned by the Licensor.
 
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
+"User" means the individual or entity receiving or using the Software.
 
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
+"Third-Party Components" means libraries, runtimes, assets, datasets, or other
+materials owned by third parties and distributed under their own terms.
 
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
+2. OWNERSHIP
 
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
+The Software is licensed, not sold. Except for Third-Party Components and any
+material for which the Licensor does not own the necessary rights, all
+copyright and other applicable intellectual-property rights in the Software
+remain with the Licensor.
 
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
+No rights are granted by implication, estoppel, or otherwise.
 
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or by an individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means any form of electronic, verbal, or written communication sent
-      to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
-      and issue tracking systems that are managed by, or on behalf of, the
-      Licensor for the purpose of discussing and improving the Work, but
-      excluding communication that is conspicuously marked or otherwise
-      designated in writing by the copyright owner as "Not a Contribution."
+3. LIMITED PERMISSION TO USE
 
-      "Contributor" shall mean Licensor and any individual or Legal Entity
-      on behalf of whom a Contribution has been received by Licensor and
-      subsequently incorporated within the Work.
+Subject to this License, the Licensor grants an individual User a limited,
+non-exclusive, non-transferable, non-sublicensable permission to:
 
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
+a. download an official copy of the Software;
+b. install and run the Software for personal use, personal study, education, or
+   evaluation; and
+c. make copies strictly necessary to install, run, or back up that authorized
+   copy.
 
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such license applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution(s)
-      with the Work to which such Contribution(s) was submitted. If You
-      institute patent litigation against any entity (including a
-      cross-claim or counterclaim in a lawsuit) alleging that the Work
-      or a Contribution incorporated within the Work constitutes direct
-      or contributory patent infringement, then any patent licenses
-      granted to You under this License for that Work shall terminate
-      as of the date such litigation is filed.
+This permission does not include institutional, organizational, commercial,
+production, resale, hosted-service, or revenue-generating use unless the
+Licensor gives separate written authorization.
 
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
+4. RESTRICTIONS
 
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
+Except where mandatory law expressly provides otherwise, the User may not,
+without prior written permission from the Licensor:
 
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
+a. copy, republish, mirror, distribute, redistribute, transmit, sell, rent,
+   lease, sublicense, or otherwise make the Software available to third
+   parties;
+b. modify, adapt, translate, merge, port, transform, or create derivative works
+   based on the Software;
+c. publish or distribute modified or unmodified source code derived from the
+   Software;
+d. incorporate the Software or substantial portions of it into another
+   application, library, product, service, course package, or commercial
+   offering;
+e. use the Software to provide a hosted service, software-as-a-service
+   offering, paid consulting deliverable, laboratory service, or other service
+   for third parties;
+f. remove, alter, conceal, or misrepresent copyright, authorship, trademark,
+   attribution, or license notices;
+g. represent a fork, modified build, or derivative product as an official Nexum
+   release;
+h. reverse engineer, decompile, or disassemble distributed binaries except to
+   the limited extent such restriction is prohibited by mandatory law; or
+i. use the source code as a dataset to train or fine-tune a machine-learning
+   model, or systematically reproduce the Software through automated code
+   generation, without prior written authorization.
 
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that do not pertain to any part of
-          the Derivative Works; and
+5. AUTHORIZED DISTRIBUTION CHANNELS
 
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in at least one
-          of the following places: within a NOTICE text file distributed
-          as part of the Derivative Works; within the Source form or
-          documentation, if provided along with the Derivative Works; or,
-          within a display generated by the Derivative Works, if and
-          wherever such third-party notices normally appear. The contents
-          of the NOTICE file are for informational purposes only and
-          do not modify the License. You may add Your own attribution
-          notices within Derivative Works that You distribute, alongside
-          or as an addendum to the NOTICE text from the Work, provided
-          that such additional attribution notices cannot be construed
-          as modifying the License.
+The Licensor may authorize specific stores, package repositories, mirrors,
+continuous-integration services, or hosting providers to reproduce and
+distribute official copies of the Software. Such authorization applies only to
+the scope expressly approved by the Licensor and does not create redistribution
+rights for other parties.
 
-      You may add Your own copyright statement to Your modifications and
-      may provide additional or different license terms and conditions
-      for use, reproduction, or distribution of Your modifications, or
-      for any such Derivative Works as a whole, provided Your use,
-      reproduction, and distribution of the Work otherwise complies with
-      the conditions stated in this License.
+Technical copies made by service providers used by the Licensor are permitted
+only as necessary to operate those services.
 
-   5. Submission of Contributions. Unless You explicitly state otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
-      with Licensor regarding such Contributions.
+6. COMMERCIAL AND INSTITUTIONAL LICENSING
 
-   6. Trademarks. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
+Commercial, institutional, laboratory, organizational, government, classroom
+deployment, redistribution, integration, OEM, or hosted-service rights require
+a separate written license from the Licensor.
 
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
+A separate license may grant additional rights and may include fees, usage
+limits, support, update rights, deployment limits, or other terms.
 
-   8. Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
+7. CONTRIBUTIONS
 
-   9. Accepting Warranty or Additional Liability. While redistributing
-      the Work or Derivative Works thereof, You may choose to offer,
-      and charge a fee for, acceptance of support, warranty, indemnity,
-      or other liability obligations and/or rights consistent with this
-      License. However, in accepting such obligations, You may act only
-      on Your own behalf and on Your sole responsibility, not on behalf
-      of any other Contributor, and only if You agree to indemnify,
-      defend, and hold each Contributor harmless for any liability
-      incurred by, or claims asserted against, such Contributor by reason
-      of your accepting any such warranty or additional liability.
+Unless a separate written agreement states otherwise, submitting code or other
+copyrightable material for inclusion in Nexum constitutes a representation that
+the contributor has the right to submit it and grants the Licensor a perpetual,
+worldwide, irrevocable, non-exclusive, royalty-free license to reproduce,
+modify, prepare derivative works from, distribute, sublicense, and relicense
+that contribution as part of Nexum, including in proprietary and commercial
+releases.
 
-   END OF TERMS AND CONDITIONS
+Submission of a contribution does not grant the contributor any ownership in
+the rest of Nexum.
 
-   APPENDIX: How to apply the Apache License to your work.
+8. THIRD-PARTY COMPONENTS
 
-      To apply the Apache License to your work, attach the following
-      boilerplate notice, with the fields enclosed by brackets "[]"
-      replaced with your own identifying information. (Don't include
-      the brackets!)  The text should be enclosed in the appropriate
-      comment syntax for the file format. We also recommend that a
-      file or class name and description of purpose be included on the
-      same "printed page" as the copyright notice for easier
-      identification within third-party archives.
+Third-Party Components are governed by their respective licenses. This License
+does not replace, restrict, or expand rights granted by those third-party
+licenses. Where required, their copyright notices and license terms must be
+preserved.
 
-   Copyright [yyyy] [name of copyright owner]
+9. PREVIOUSLY PUBLISHED VERSIONS
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+Some earlier versions, commits, or portions of Nexum were published under the
+MIT License. Nothing in this License revokes rights that were validly granted
+under the MIT License for material as it was released under those terms.
 
-       http://www.apache.org/licenses/LICENSE-2.0
+This Proprietary License applies prospectively to new material and releases
+distributed under it, subject to any continuing rights arising from prior
+licenses, third-party licenses, and contributor rights.
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+10. NO TRADEMARK LICENSE
+
+"Nexum", "Nexum Scientific Workbench", associated logos, and other project
+identifiers are not licensed for use as trademarks, product names, or branding
+for derivative or competing products except with prior written authorization.
+
+11. TERMINATION
+
+Any permission granted by this License terminates automatically if the User
+materially breaches its terms. Upon termination, the User must stop exercising
+rights granted solely by this License and delete unauthorized copies, except
+where retention is required by law.
+
+Termination does not affect rights that cannot legally be terminated or rights
+previously granted under a different applicable license.
+
+12. DISCLAIMER OF WARRANTY
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED "AS IS" AND
+"AS AVAILABLE", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, ACCURACY, RELIABILITY, OR NON-INFRINGEMENT.
+
+THE SOFTWARE IS A SCIENTIFIC AND EDUCATIONAL TOOL. RESULTS MUST BE REVIEWED
+WITH APPROPRIATE PROFESSIONAL OR SCIENTIFIC JUDGMENT BEFORE THEY ARE USED IN
+SAFETY-CRITICAL, REGULATORY, CLINICAL, INDUSTRIAL, OR OTHER HIGH-CONSEQUENCE
+CONTEXTS.
+
+13. LIMITATION OF LIABILITY
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE LICENSOR SHALL NOT BE LIABLE FOR
+ANY INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, CONSEQUENTIAL, OR SIMILAR
+DAMAGES, OR FOR LOSS OF DATA, PROFITS, REVENUE, BUSINESS, OR USE, ARISING FROM
+OR RELATED TO THE SOFTWARE OR THIS LICENSE.
+
+14. RESERVATION OF RIGHTS
+
+Any use not expressly permitted by this License is reserved to the Licensor.
+
+For permissions or licensing requests, contact the project maintainer through
+the official Nexum repository:
+https://github.com/darimarchive-glitch/Nexum-Scientific-Workbench

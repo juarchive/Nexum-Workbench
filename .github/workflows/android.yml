@@ -1,0 +1,111 @@
+name: Android APK
+on:
+  push:
+    branches: [main, rebuild/scientific-workbench]
+    tags: ['android-v*']
+    paths: ['android/**', 'nexum/core/**', 'nexum/identity.py', 'tests/**', '.github/workflows/android.yml']
+  pull_request:
+    paths: ['android/**', 'nexum/core/**', 'nexum/identity.py', 'tests/**', '.github/workflows/android.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Shared engine and scientific reference tests
+        run: |
+          python -m unittest discover -s tests -p test_portable.py -v
+          python -m unittest discover -s tests -p test_input_integrity.py -v
+          python -m unittest discover -s tests -p test_science_reference_cases.py -v
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Build and lint APK
+        run: gradle -p android --no-daemon assembleDebug lintDebug
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          arch: x86_64
+          disable-animations: true
+          script: gradle -p android --no-daemon connectedDebugAndroidTest
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Nexum-Android-preview-debug
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Android-validation
+          path: |
+            android/app/build/reports/
+            android/app/build/outputs/androidTest-results/
+      - name: Prepare distribution signing
+        if: startsWith(github.ref, 'refs/tags/android-v')
+        env:
+          KEYSTORE: ${{ secrets.NEXUM_ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          test -n "$KEYSTORE" || { echo 'Configure a chave de distribuição antes de publicar.'; exit 1; }
+          umask 077
+          printf '%s' "$KEYSTORE" | base64 --decode > "$RUNNER_TEMP/nexum-release.jks"
+      - name: Build signed release APK
+        if: startsWith(github.ref, 'refs/tags/android-v')
+        env:
+          NEXUM_KEYSTORE: ${{ runner.temp }}/nexum-release.jks
+          NEXUM_STORE_PASSWORD: ${{ secrets.NEXUM_ANDROID_STORE_PASSWORD }}
+          NEXUM_KEY_ALIAS: ${{ secrets.NEXUM_ANDROID_KEY_ALIAS }}
+          NEXUM_KEY_PASSWORD: ${{ secrets.NEXUM_ANDROID_KEY_PASSWORD }}
+        run: gradle -p android --no-daemon assembleRelease
+      - name: Verify release signature and prepare assets
+        if: startsWith(github.ref, 'refs/tags/android-v')
+        run: |
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose android/app/build/outputs/apk/release/app-release.apk
+          mkdir release-assets
+          cp android/app/build/outputs/apk/release/app-release.apk release-assets/Nexum-Android.apk
+          cd release-assets
+          sha256sum Nexum-Android.apk > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        if: startsWith(github.ref, 'refs/tags/android-v')
+        with:
+          name: Nexum-Android-release
+          path: release-assets/
+      - name: Remove temporary key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/nexum-release.jks"
+  release:
+    if: startsWith(github.ref, 'refs/tags/android-v')
+    needs: apk
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Nexum-Android-release
+          path: release-assets
+      - name: Publish Android prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" --verify-tag --prerelease --title "Nexum Android $RELEASE_TAG" --notes-file docs/distribution/android.md release-assets/*

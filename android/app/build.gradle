@@ -1,0 +1,48 @@
+plugins {
+    id 'com.android.application'
+    id 'com.chaquo.python'
+}
+android {
+    namespace 'io.github.nexum.workbench'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'io.github.nexum.workbench'
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName '0.1.0-preview'
+        ndk { abiFilters 'arm64-v8a', 'x86_64' }
+        testInstrumentationRunner 'android.test.InstrumentationTestRunner'
+    }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+    signingConfigs {
+        release {
+            if (System.getenv('NEXUM_KEYSTORE')) {
+                storeFile file(System.getenv('NEXUM_KEYSTORE'))
+                storePassword System.getenv('NEXUM_STORE_PASSWORD')
+                keyAlias System.getenv('NEXUM_KEY_ALIAS')
+                keyPassword System.getenv('NEXUM_KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release { signingConfig signingConfigs.release; minifyEnabled false }
+    }
+}
+chaquopy {
+    defaultConfig { version '3.12' }
+    sourceSets {
+        main {
+            srcDir '../..'
+            include 'nexum/__init__.py', 'nexum/identity.py', 'nexum/core/*.py'
+        }
+    }
+}
+tasks.register('requireReleaseSigning') {
+    doLast {
+        ['NEXUM_KEYSTORE', 'NEXUM_STORE_PASSWORD', 'NEXUM_KEY_ALIAS', 'NEXUM_KEY_PASSWORD'].each {
+            if (!System.getenv(it)) throw new GradleException("Assinatura de distribuição ausente: " + it)
+        }
+    }
+}
+tasks.configureEach { if (name == 'preReleaseBuild') dependsOn 'requireReleaseSigning' }

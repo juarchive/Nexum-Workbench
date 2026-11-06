@@ -40,3 +40,22 @@ A tela inicial mantém os atalhos de tarefa e a paisagem por trás do vidro. Nas
 A suíte já contém referências independentes para pH de base forte, pressão por gás ideal e Beer–Lambert. A etapa inicial verifica as quatro incógnitas do gás ideal, rejeita entradas não finitas e compara o pH e a curva de uma titulação forte–forte antes, durante e após a equivalência. A prova de ácido acético com NaOH compara cinco pontos com um polinômio independente de alta precisão e com os valores calculados da [tabela 14.2 do OpenStax](https://openstax.org/books/chemistry-2e/pages/14-7-acid-base-titrations). Também verifica os balanços de matéria e carga e a reabertura da sessão com entradas, hipóteses, resultado e gráfico. A mesma titulação agora passa pelo registro no projeto de laboratório, reabertura do arquivo e exportação HTML, com entradas, hipóteses, pH, curva e marcador de equivalência. A comparação com medições experimentais continua em aberto.
 
 A [matriz de validação](../science/validation-matrix.md) e a [auditoria dos modelos](../science/model-audit.md) registram a cobertura e as limitações já identificadas.
+
+## Ampliação Android e usabilidade — 2026-11-06
+
+Escopo solicitado: desktop completo e APK distribuível. A conclusão exige que cada ferramenta tenha finalidade compreensível, entradas com unidades, exemplo identificado, interpretação, limites e evidências de validação. A autoria permanece Davi P. Souza.
+
+Implementado nesta etapa: guia contextual nas 43 calculadoras desktop; fronteira JSON compartilhada com Android; cliente móvel offline com formulários, cálculos em segundo plano, gráficos, caderno local e exportação; pipeline de APK com testes no emulador e assinatura obrigatória para release.
+
+Correções adicionais: fórmulas não ignoram caracteres desconhecidos, cargas, índices zero ou delimitadores incompatíveis; entradas não finitas são recusadas em campos antes vulneráveis de constantes, especiação e Nernst.
+
+Não concluído: rebuild visual e funcional de todas as telas desktop; integração móvel dos módulos de laboratório, estruturas e experimentos; validação experimental de cada modelo; inspeção visual do Android; testes em aparelho físico; releases assinadas. Pipeline configurado não é evidência de build aprovado.
+
+| Área | Evidência atual | Critério ainda aberto |
+| --- | --- | --- |
+| Calculadoras | Casos de referência existentes e teste de transporte das 43 ferramentas | Ampliar referências independentes e revisão de usabilidade |
+| Desktop | Guias adicionados ao formulário compartilhado | Inspeção GTK de cada fluxo e visual de todas as páginas |
+| Android | Código do cliente e testes de instrumentação | Compilar, instalar, exercitar UI e recuperar registros |
+| Dados e laboratório | Implementação desktop existente | Auditoria integral, incertezas e fluxos móveis |
+| Estruturas e experimentos | Implementação desktop existente | Validar significado físico, navegação e versão móvel |
+| Distribuição | Workflows desktop e Android | Builds verificados e assinatura Android configurada |

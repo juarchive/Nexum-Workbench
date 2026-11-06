@@ -5,6 +5,7 @@ from gi.repository import Gtk,Adw,Gdk
 from nexum.core.registry import GROUPS,TOOLS,TOOL_SCOPE
 from nexum.core.calculators import CALCS
 from nexum.core.search import relevance
+from nexum.core.guidance import guide
 from .plot_widget import ScientificPlot
 
 class CalculatorPage(Gtk.Box):
@@ -77,6 +78,13 @@ class CalculatorPage(Gtk.Box):
             if idx!=self._category_idx:self._category_idx=idx;self.category.set_selected(idx);self._rebuild_tool_list()
         form_sw=Gtk.ScrolledWindow();form_sw.set_policy(Gtk.PolicyType.NEVER,Gtk.PolicyType.AUTOMATIC);form_sw.set_hexpand(True);form_sw.set_vexpand(True);form_sw.set_min_content_width(300);form_sw.set_propagate_natural_height(False)
         form=Gtk.Box(orientation=Gtk.Orientation.VERTICAL,spacing=14);form.set_margin_top(4);form.set_margin_end(16);form.set_margin_bottom(16)
+        guidance = guide(tid)
+        help_box = Adw.PreferencesGroup(title='Como usar esta ferramenta')
+        for key in ('purpose', 'instructions', 'interpretation', 'example_notice'):
+            label = Gtk.Label(label=guidance[key], xalign=0, wrap=True)
+            label.set_max_width_chars(52)
+            help_box.add(label)
+        form.append(help_box)
         group=Adw.PreferencesGroup(title='Entradas',description='Edite os dados do problema. Unidades e hipóteses aparecem no desenvolvimento.')
         for spec in fields:
             if spec['kind']=='select':

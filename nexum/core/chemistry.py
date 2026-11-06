@@ -4,27 +4,50 @@ from fractions import Fraction
 from .periodic import ELEMENTS, BY_Z
 
 TOKEN=re.compile(r'([A-Z][a-z]?|\d+|[()\[\]])')
-def parse_formula(formula:str):
-    formula=formula.strip().replace('·','.'); total={}
+def parse_formula(formula: str):
+    formula = formula.strip().replace('·', '.')
+    total = {}
     for part in formula.split('.'):
-        m=re.match(r'^(\d+)(.*)$',part); mult=int(m.group(1)) if m else 1; body=m.group(2) if m else part
-        toks=TOKEN.findall(body); stack=[{}]; i=0
-        while i<len(toks):
-            t=toks[i]
-            if t in '([': stack.append({}); i+=1
-            elif t in ')]':
-                if len(stack)==1: raise ValueError('Parênteses desbalanceados.')
-                group=stack.pop(); i+=1; n=int(toks[i]) if i<len(toks) and toks[i].isdigit() else 1; i+=1 if i<len(toks) and toks[i].isdigit() else 0
-                for e,c in group.items(): stack[-1][e]=stack[-1].get(e,0)+c*n
-            elif re.match(r'[A-Z]',t):
-                if t not in ELEMENTS: raise ValueError(f'Elemento desconhecido: {t}')
-                i+=1; n=int(toks[i]) if i<len(toks) and toks[i].isdigit() else 1; i+=1 if i<len(toks) and toks[i].isdigit() else 0
-                stack[-1][t]=stack[-1].get(t,0)+n
-            elif t.isdigit(): raise ValueError('Índice inesperado na fórmula.')
-            else: i+=1
-        if len(stack)!=1: raise ValueError('Parênteses desbalanceados.')
-        for e,c in stack[0].items(): total[e]=total.get(e,0)+c*mult
-    if not total: raise ValueError('Fórmula vazia ou inválida.')
+        if not part:
+            raise ValueError('Fórmula vazia ou componente de hidrato ausente.')
+        m = re.match(r'^(\d+)(.*)$', part)
+        mult = int(m.group(1)) if m else 1
+        body = m.group(2) if m else part
+        toks = TOKEN.findall(body)
+        if mult <= 0 or not body or ''.join(toks) != body:
+            raise ValueError('Fórmula inválida: use símbolos químicos, índices inteiros positivos e grupos; cargas não são aceitas aqui.')
+        stack = [{}]
+        brackets = []
+        i = 0
+        while i < len(toks):
+            token = toks[i]
+            if token in ('(', '['):
+                brackets.append(token); stack.append({}); i += 1
+                continue
+            if token in (')', ']'):
+                if not brackets or brackets.pop() != {')': '(', ']': '['}[token]:
+                    raise ValueError('Parênteses ou colchetes desbalanceados.')
+                group = stack.pop()
+                if not group:
+                    raise ValueError('Grupo vazio na fórmula.')
+            elif token in ELEMENTS:
+                group = {token: 1}
+            else:
+                raise ValueError(f'Símbolo ou índice inesperado: {token}')
+            i += 1
+            n = 1
+            if i < len(toks) and toks[i].isdigit():
+                n = int(toks[i]); i += 1
+            if n <= 0:
+                raise ValueError('Índices devem ser inteiros positivos.')
+            for element, count in group.items():
+                stack[-1][element] = stack[-1].get(element, 0) + count * n
+        if brackets:
+            raise ValueError('Parênteses ou colchetes desbalanceados.')
+        for element, count in stack[0].items():
+            total[element] = total.get(element, 0) + count * mult
+    if not total:
+        raise ValueError('Fórmula vazia ou inválida.')
     return total
 
 def molar_mass(formula): return sum(ELEMENTS[e]['mass']*n for e,n in parse_formula(formula).items())

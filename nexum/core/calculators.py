@@ -50,6 +50,8 @@ def num(d,k): return finite_number(d[k], k)
 def text(d,k): return str(d[k]).strip()
 
 def R(title,val,unit,eq,sub,notes=(),data=None):
+    if not isinstance(val, str) and not math.isfinite(float(val)):
+        raise ValueError('Resultado fora do domínio numérico; revise a escala das entradas.')
     body=f'{title}\n\nEquação / modelo\n{eq}\n\nSubstituição / desenvolvimento\n{sub}'
     if notes: body+='\n\nHipóteses e limites\n'+'\n'.join('• '+x for x in notes)
     return Result(f'{fnum(val)} {unit}'.strip(),body,data)
@@ -189,7 +191,7 @@ def calc_collig(d):
     return R('Resultado coligativo',val,unit,eq,'Modelo de solução ideal diluída.',['i efetivo deve ser informado pelo usuário; associação/dissociação não ideal não é prevista.'])
 
 def calc_kconvert(d):
-    K=pos(d['k'],'K'); dn=float(d['delta_n']); T=pos(d['temperature_k'],'T'); direction=text(d,'direction').lower(); factor=(0.08314462618*T)**dn
+    K=pos(d['k'],'K'); dn=num(d,'delta_n'); T=pos(d['temperature_k'],'T'); direction=text(d,'direction').lower(); factor=(0.08314462618*T)**dn
     forward='kc' in direction and 'kp' in direction and direction.index('kc')<direction.index('kp')
     val=K*factor if forward else K/factor
     return R('Constante convertida',val,'','Kp=Kc(RT·c°/p°)^Δn',f'Com c°=1 mol/L e p°=1 bar, fator numérico=(RT)^Δn={factor:.8g}',
@@ -220,7 +222,7 @@ def calc_ph(d):
              ['Kw=1,0×10⁻¹⁴ a 25 °C.', 'O valor é pH aproximado por concentração; pH termodinâmico é definido por atividade de H⁺.'])
 
 def calc_buffer(d):
-    pka=float(d['pka']); acid=nonneg(d['acid'],'[HA] formal'); base=nonneg(d['base'],'[A⁻] formal')
+    pka=num(d,'pka'); acid=nonneg(d['acid'],'[HA] formal'); base=nonneg(d['base'],'[A⁻] formal')
     if acid+base<=0: raise ValueError('Informe alguma quantidade de tampão.')
     ka=10**(-pka); st=buffer_state(acid,base,ka)
     hh='—' if st['hh_ph'] is None else f'{st["hh_ph"]:.8g}'
@@ -230,7 +232,7 @@ def calc_buffer(d):
 
 def calc_titration(d):
     mode_txt=text(d,'mode').lower(); mode='weak-strong' if ('weak' in mode_txt or 'fraco' in mode_txt) else 'strong-strong'
-    Ca=pos(d['acid_m'],'Ca'); Va=pos(d['acid_ml'],'Va'); Cb=pos(d['base_m'],'Cb'); Vb=nonneg(d['base_ml'],'Vb'); pka=float(d['pka']); ka=10**(-pka)
+    Ca=pos(d['acid_m'],'Ca'); Va=pos(d['acid_ml'],'Va'); Cb=pos(d['base_m'],'Cb'); Vb=nonneg(d['base_ml'],'Vb'); pka=num(d,'pka'); ka=10**(-pka)
     st=titration_state(mode=mode,acid_c=Ca,acid_v_ml=Va,base_c=Cb,base_added_ml=Vb,ka=ka)
     vmax=max(Vb,st['equivalence_ml']*2,Va*2)
     curve=titration_curve(mode=mode,acid_c=Ca,acid_v_ml=Va,base_c=Cb,max_volume_ml=vmax,ka=ka,points=241)
@@ -246,7 +248,7 @@ def calc_titration(d):
              ['25 °C, Kw=10⁻¹⁴; soluções ideais; ácido monoprótico e titulante base forte.', 'A curva usa o mesmo solucionador de balanço em todos os pontos, inclusive perto da equivalência.'],data)
 
 def calc_speciation(d):
-    pka=float(d['pka']); ph=float(d['ph']); pmin=float(d['ph_min']); pmax=float(d['ph_max'])
+    pka=num(d,'pka'); ph=num(d,'ph'); pmin=num(d,'ph_min'); pmax=num(d,'ph_max')
     if pmax<=pmin: raise ValueError('pH máximo deve ser maior que pH mínimo.')
     st=monoprotic_speciation(pka,ph); pts_ha=[]; pts_a=[]
     for i in range(241):
@@ -255,7 +257,7 @@ def calc_speciation(d):
     return R('Fração A⁻',st['alpha_a'],'','αHA=[H⁺]/([H⁺]+Ka); αA⁻=Ka/([H⁺]+Ka)',f'pH={ph:g}; pKa={pka:g}; αHA={st["alpha_ha"]:.8g}; αA⁻={st["alpha_a"]:.8g}',['Ácido monoprótico ideal.'],{'plot':pdata,**st})
 
 def calc_cell(d):
-    ec=float(d['e_cathode']); ea=float(d['e_anode']); n=int(d['n_e']);
+    ec=num(d,'e_cathode'); ea=num(d,'e_anode'); n=int(d['n_e']);
     if n<=0: raise ValueError('n de elétrons deve ser inteiro positivo.')
     Q=pos(d['q'],'Q'); T=pos(d['temperature_k'],'T'); E0=ec-ea; E=E0-R_J*T/(n*F)*math.log(Q); dg=-n*F*E/1000
     center=math.log10(Q); xs=[center-4+8*i/240 for i in range(241)]; pts=[(x,E0-R_J*T/(n*F)*math.log(10**x)) for x in xs]
@@ -323,7 +325,7 @@ def calc_lattice(d):
     return R('Densidade cristalina',rho,'g/cm³','ρ=Z·M/(N_A a³)',f'Z={N}; a={a:.8g} cm; coordenação={coord}',['Célula cúbica ideal, ocupação completa e composição estequiométrica.'],data={'coordination':coord})
 
 def calc_bragg(d):
-    lam=pos(d['wavelength_nm'],'λ'); theta_deg=float(d['theta_deg']); n=int(d['order'])
+    lam=pos(d['wavelength_nm'],'λ'); theta_deg=num(d,'theta_deg'); n=int(d['order'])
     if not 0<theta_deg<90: raise ValueError('θ deve estar entre 0° e 90°.')
     if n<1: raise ValueError('A ordem n deve ser inteira positiva.')
     theta=math.radians(theta_deg); spacing=n*lam/(2*math.sin(theta))
@@ -348,13 +350,13 @@ def calc_nuclear(d):
     return Result(out,f'Conservação formal de A e Z.\nNuclídeo-filho: A={A2}, Z={Z2} ({sym}); emissão: {emitted}\nNão prevê estabilidade, energia Q, canais concorrentes nem probabilidade de decaimento.')
 
 def calc_ethanol(d):
-    feed=pos(d['feed_mass_kg'],'massa de matéria-prima'); sugar=float(d['fermentable_fraction']); eff=pct(d['efficiency'],'Eficiência')/100
+    feed=pos(d['feed_mass_kg'],'massa de matéria-prima'); sugar=num(d,'fermentable_fraction'); eff=pct(d['efficiency'],'Eficiência')/100
     if not 0<=sugar<=1: raise ValueError('Fração fermentável deve estar entre 0 e 1.')
     sugar_mass=feed*sugar; ethanol=sugar_mass*(2*46.06844/180.156)*eff
     return R('Etanol teórico corrigido',ethanol,'kg','C₆H₁₂O₆ → 2 C₂H₅OH + 2 CO₂',f'açúcar fermentável={sugar_mass:.8g} kg; eficiência={eff*100:.5g}%', ['Balanço ideal de glicose equivalente; composição real da biomassa e reações paralelas não são modeladas.'])
 
 def calc_brix(d):
-    mass=pos(d['solution_mass_kg'],'massa da solução'); brix=float(d['brix']); target=float(d['target_brix'])
+    mass=pos(d['solution_mass_kg'],'massa da solução'); brix=num(d,'brix'); target=num(d,'target_brix')
     if not (0<brix<100 and 0<target<100): raise ValueError('Brix inicial e alvo devem estar entre 0 e 100.')
     solids=mass*brix/100; final=solids/(target/100); delta=mass-final
     if delta>=0:

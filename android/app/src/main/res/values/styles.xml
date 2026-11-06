@@ -1,0 +1,10 @@
+<resources>
+    <style name="NexumTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#315C80</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">#DFEAF4</item>
+        <item name="android:navigationBarColor">#E6E8F3</item>
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
+</resources>

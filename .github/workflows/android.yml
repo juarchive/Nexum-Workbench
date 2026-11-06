@@ -50,7 +50,10 @@ jobs:
           api-level: 29
           arch: x86_64
           disable-animations: true
-          script: gradle -p android --no-daemon connectedDebugAndroidTest
+          script: |
+            gradle -p android --no-daemon connectedDebugAndroidTest
+            mkdir -p android/app/build/reports/screenshots
+            adb pull /sdcard/Android/data/io.github.nexum.workbench/files/. android/app/build/reports/screenshots/
       - uses: actions/upload-artifact@v4
         with:
           name: Nexum-Android-preview-debug

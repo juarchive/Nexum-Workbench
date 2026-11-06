@@ -1,0 +1,23 @@
+.venv/
+.venv-science/
+.windows-config.json
+pip-*/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite3
+*.db
+*.log
+.DS_Store
+
+
+# Desktop distribution intermediates
+/build/
+/dist/
+*.spec.bak

@@ -1,0 +1,70 @@
+"""Task-oriented guidance shared by desktop and Android. Author: Davi P. Souza."""
+PURPOSE = {
+'molar': 'Descobrir a massa de um mol a partir da fórmula química.',
+'balance': 'Ajustar os coeficientes de uma reação para conservar os átomos.',
+'stoichiometry': 'Estimar quanto produto obter a partir da massa do reagente limitante.',
+'empirical': 'Inferir a proporção de átomos a partir da composição percentual.',
+'calorimetry': 'Estimar o calor necessário para aquecer ou resfriar uma amostra.',
+'reaction': 'Avaliar ΔG e a constante de equilíbrio em uma temperatura.',
+'hess': 'Combinar entalpias de etapas para obter a entalpia da reação global.',
+'clapeyron': 'Estimar como a pressão de vapor varia com a temperatura.',
+'arrhenius': 'Estimar como uma constante de velocidade muda ao aquecer.',
+'ideal': 'Calcular pressão, volume, quantidade de matéria ou temperatura de um gás ideal.',
+'real': 'Estimar a pressão incluindo interações e volume molecular.',
+'concentration': 'Converter massa de soluto e volume final em concentração.',
+'dilution': 'Determinar o volume final de uma diluição que conserva o soluto.',
+'colligative': 'Estimar alteração de ebulição, congelamento ou pressão osmótica.',
+'constants': 'Converter constantes expressas em concentrações e pressões.',
+'ice': 'Calcular concentrações de equilíbrio para a reação específica A + B ⇌ C.',
+'ph': 'Estimar o pH de um ácido ou base monoprotônica em solução ideal.',
+'buffer': 'Estimar o pH de um par ácido fraco e base conjugada.',
+'titration': 'Simular o pH ao adicionar uma base forte a um ácido.',
+'speciation': 'Ver a proporção das formas HA e A⁻ em determinado pH.',
+'kinetics': 'Prever concentração e meia-vida para uma lei cinética escolhida.',
+'cell': 'Calcular potencial de uma célula usando potenciais de redução e quociente reacional.',
+'faraday': 'Estimar a massa depositada por uma corrente elétrica.',
+'configuration': 'Consultar a ocupação eletrônica de referência de um átomo ou íon.',
+'photon': 'Converter comprimento de onda em frequência e energia por fóton.',
+'photoelectric': 'Verificar se a luz pode ejetar elétrons de um material.',
+'bohr': 'Calcular uma transição eletrônica em uma espécie com um único elétron.',
+'beer': 'Prever absorbância a partir de concentração, caminho óptico e absortividade.',
+'regression': 'Ajustar uma reta aos pontos de calibração fornecidos.',
+'lattice': 'Estimar densidade de um cristal cúbico pela célula unitária.',
+'bragg': 'Determinar espaçamento entre planos cristalinos a partir de difração.',
+'decay': 'Estimar a quantidade remanescente após decaimento exponencial.',
+'nuclear': 'Conferir a mudança formal dos números de massa e atômico.',
+'ethanol': 'Estimar etanol a partir de matéria fermentável em equivalente de glicose.',
+'brix': 'Calcular água a adicionar ou evaporar para alterar o teor de sólidos.',
+'titration_derivatives': 'Estimar a equivalência a partir de uma curva de titulação medida.',
+'combustion': 'Estimar consumo de ar e produtos na combustão de um hidrocarboneto.',
+'reactor': 'Dimensionar um reator ideal para uma conversão desejada.',
+'spectral_units': 'Converter posições espectrais entre diferentes unidades.',
+'mass_spectrum': 'Calcular massas e relações massa/carga dentro do modelo informado.',
+'pipe_loss': 'Estimar queda de pressão por atrito em um tubo circular.',
+'exchanger': 'Estimar potência térmica de um trocador ideal em contracorrente.',
+'chromatography': 'Avaliar separação de dois picos por tempos e larguras na linha de base.',
+}
+INTERPRET = {
+'ideal': 'A saída é a única grandeza deixada vazia. Gases densos podem exigir outro modelo.',
+'ph': 'O pH calculado depende do modelo ideal a 25 °C; não substitui uma medição.',
+'bragg': 'Informe θ, não 2θ. Se o equipamento fornece 2θ, divida o ângulo por dois.',
+'regression': 'R² não demonstra sozinho boa calibração; examine resíduos e faixa de uso.',
+'cell': 'Use potenciais de redução para ambos os eletrodos. Q deve usar atividades.',
+'calorimetry': 'Calor positivo indica aquecimento da amostra; negativo indica resfriamento.',
+'kinetics': 'A ordem é uma hipótese fornecida, não um mecanismo identificado pelo programa.',
+'decay': 'Tempo e meia-vida devem usar a mesma unidade.',
+'real': 'Os parâmetros a e b precisam corresponder à equação escolhida e às unidades usadas.',
+}
+def guide(tool_id):
+    from .registry import TOOLS, TOOL_SCOPE
+    tool = next((t for t in TOOLS if t[0] == tool_id), None)
+    if tool is None:
+        raise ValueError('Ferramenta desconhecida.')
+    return {
+        'purpose': PURPOSE[tool_id],
+        'instructions': ('Deixe exatamente uma das quatro grandezas vazia.' if tool_id == 'ideal' else
+                         'Preencha as entradas nas unidades indicadas. Use ponto decimal; listas seguem o formato do exemplo.'),
+        'interpretation': INTERPRET.get(tool_id, 'Confira o desenvolvimento, as unidades e as hipóteses antes de usar o valor em uma análise.'),
+        'limits': TOOL_SCOPE[tool_id][1],
+        'example_notice': 'Valores iniciais são um exemplo editável, não medições da sua amostra.',
+    }

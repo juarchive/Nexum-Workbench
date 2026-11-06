@@ -5,6 +5,9 @@ plugins {
 android {
     namespace 'io.github.nexum.workbench'
     compileSdk 35
+    useLibrary 'android.test.runner', false
+    useLibrary 'android.test.base', false
+    useLibrary 'android.test.mock', false
     defaultConfig {
         applicationId 'io.github.nexum.workbench'
         minSdk 24

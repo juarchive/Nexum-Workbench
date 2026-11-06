@@ -4,7 +4,7 @@ Autoria do Nexum: Davi P. Souza.
 
 Esta implementação compartilha as 43 calculadoras Python com o desktop, com navegação por tarefa, instruções, formulários, desenvolvimento do cálculo, gráficos e um caderno local de registros JSON. Não requer servidor nem permissão de internet. Os registros não usam o formato de projeto `.nexum7`; são evidências de cálculo exportáveis.
 
-**Não equivale ao aplicativo desktop completo.** Visualização molecular 3D, bancadas animadas, importação de séries e laboratório completo ainda precisam de implementação móvel. A interface Android ainda precisa de inspeção visual e testes em dispositivo físico. O fundo usa gradiente e cartões translúcidos; não representa ainda a paisagem aprovada no desktop.
+**Não equivale ao aplicativo desktop completo.** Visualização molecular 3D, bancadas animadas, importação de séries e laboratório completo ainda precisam de implementação móvel. A compilação local de `assembleDebug`, `assembleDebugAndroidTest` e `lintDebug` passou (zero erros de lint, seis avisos). A assinatura debug foi verificada com apksigner. A interface Android ainda precisa de inspeção visual e testes em dispositivo físico. O fundo usa gradiente e cartões translúcidos; não representa ainda a paisagem aprovada no desktop.
 
 ## Compilar
 
